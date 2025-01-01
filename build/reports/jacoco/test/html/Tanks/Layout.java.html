@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Layout.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tanks_scaffold</a> &gt; <a href="index.source.html" class="el_package">Tanks</a> &gt; <span class="el_source">Layout.java</span></div><h1>Layout.java</h1><pre class="source lang-java linenums">package Tanks;
+
+/** Import necessary library */
+import java.util.*;
+
+/** Represent Layout data */
+<span class="fc" id="L7">public class Layout {</span>
+
+    /** Declare a HashMap storing Terrain objects */
+<span class="fc" id="L10">    private HashMap&lt;Integer, Terrain&gt; terrainList = new HashMap&lt;&gt;();</span>
+
+    /** Declare an ArrayList storing Tree objects*/
+<span class="fc" id="L13">    private final ArrayList&lt;Tree&gt; treeList = new ArrayList&lt;&gt;();</span>
+
+    /** Declare a HashMap storing Tank objects */
+<span class="fc" id="L16">    private final HashMap&lt;Character, Tank&gt; tankList = new HashMap&lt;&gt;();</span>
+
+    /** The App object running this program */
+    private App app;
+
+    /**
+     * Create new Terrain objects
+     * @param x the value of X-coordinate, ranging from 0 to 27
+     * @param y the value of Y-coordinate, ranging from 0 to 19
+     */
+    public void createTerrain(int x, float y) {
+<span class="fc" id="L27">        int lowerBound = 32 * x;</span>
+<span class="fc" id="L28">        int upperBound = 32 * x + 31;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (int i = lowerBound; i &lt;= upperBound; i++)</span>
+        {   
+<span class="fc" id="L31">            Terrain newTerrain = new Terrain(i, y*32);</span>
+<span class="fc" id="L32">            terrainList.put(i, newTerrain);</span>
+        }
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (terrainList.size() == 896)</span>
+        {
+<span class="fc" id="L37">            this.terrainList = movingAverage(movingAverage(this.terrainList));</span>
+        }
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Create a new Tank object
+     * @param x the value of X-coordinate, ranging from 0 to 27
+     * @param character the character of the tank
+     * @param colour the RGB values of the colour of the tank
+     * @param windObj the Wind object
+     */
+    public void createTank(int x, char character, int[] colour, Wind windObj) {
+<span class="fc" id="L49">        float y = terrainList.get(x*32).getY();</span>
+<span class="fc" id="L50">        Tank newTank = new Tank(x * 32, y, character, colour, windObj, this.app);</span>
+<span class="fc" id="L51">        tankList.put(character, newTank);</span>
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * Create a new Tree object
+     * @param x the value of X-coordinate, ranging from 0 to 27
+     */
+    public void createTree(int x) {
+<span class="fc" id="L59">        Tree newTree = new Tree(x * 32);</span>
+<span class="fc" id="L60">        treeList.add(newTree);</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Return the HashMap storing Terrain objects
+     * @return the HashMap storing Terrain objects
+     */
+    public HashMap&lt;Integer, Terrain&gt; getTerrainList() {
+<span class="fc" id="L68">        return this.terrainList;</span>
+    }
+
+    /**
+     * Return the ArrayList storing Tree objects
+     * @return the ArrayList storing Tree objects
+     */
+    public ArrayList&lt;Tree&gt; getTreeList() {
+<span class="fc" id="L76">        return this.treeList;</span>
+    }
+
+    /**
+     * Return the HashMap storing Tank objects
+     * @return the HashMap storing Tank objects
+     */
+    public HashMap&lt;Character, Tank&gt; getTankList() {
+<span class="fc" id="L84">        return this.tankList;</span>
+    }
+
+    /**
+     * Make the terrain become smoother by moving average
+     * @param terrainMap the hashMap of Terrain objects
+     * @return the hashMap of Terrain objects
+     */
+    private HashMap&lt;Integer, Terrain&gt; movingAverage(HashMap&lt;Integer, Terrain&gt; terrainMap) {
+<span class="fc" id="L93">        HashMap&lt;Integer, Terrain&gt; newTerrainList = new HashMap&lt;Integer, Terrain&gt;();</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        for (int i = 0; i &lt; terrainMap.size(); i++)</span>
+        {   
+<span class="fc" id="L96">            Terrain currentTerrain = terrainMap.get(i);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">            if (i &lt; 864)</span>
+            {   
+<span class="fc" id="L99">                float newY = 0.0f;</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">                for (int j = 0; j &lt; 32; j++)</span>
+                {
+<span class="fc" id="L102">                    newY += terrainMap.get(i + j).getY();</span>
+                }
+<span class="fc" id="L104">                newY = newY/32.0f;</span>
+<span class="fc" id="L105">                Terrain newTerrain = new Terrain(i, newY);</span>
+<span class="fc" id="L106">                newTerrainList.put(i, newTerrain);</span>
+<span class="fc" id="L107">            }</span>
+            else
+            {
+<span class="fc" id="L110">                newTerrainList.put(i, currentTerrain);</span>
+            }
+        }
+<span class="fc" id="L113">        return newTerrainList; </span>
+    }
+
+    /**
+     * Change the terrain when a projectile hits or tank explodes
+     * @param x, X-coordinate of where the projectile hits
+     * @param y, Y-coordinate of where the projectile hits
+     * @param radius, the radius of explosion
+     */
+    public void changeTerrain(int x, float y, float radius) {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for (int i = -30; i &lt;= 30; i++)</span>
+        {
+<span class="fc" id="L125">            float yChange = (float) Math.sqrt((Math.pow(radius, 2) - Math.pow(i, 2)));</span>
+
+<span class="fc" id="L127">            int xTerrain = (int) (x + i);</span>
+<span class="fc bfc" id="L128" title="All 4 branches covered.">            if (xTerrain &lt; 0 || xTerrain &gt; 864)</span>
+            {
+<span class="fc" id="L130">                continue;</span>
+            }
+
+<span class="fc" id="L133">            Terrain currentTerrain = this.terrainList.get(xTerrain);</span>
+<span class="fc" id="L134">            float bottom = y + yChange;</span>
+<span class="fc" id="L135">            float top = y - yChange;</span>
+
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            if (currentTerrain.getY() &lt; bottom)</span>
+            {
+<span class="fc bfc" id="L139" title="All 2 branches covered.">                if (currentTerrain.getY() &gt; top)</span>
+                {
+<span class="fc" id="L141">                    currentTerrain.setY(bottom);</span>
+                }
+                else
+                {
+<span class="fc" id="L145">                    currentTerrain.setY(currentTerrain.getY() + 2 * yChange);</span>
+                }
+            }
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">            if (currentTerrain.getY() &gt; 640)</span>
+            {
+<span class="nc" id="L150">                currentTerrain.setY(640);</span>
+            }
+        }
+<span class="fc" id="L153">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

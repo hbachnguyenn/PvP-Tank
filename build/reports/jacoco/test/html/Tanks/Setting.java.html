@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Setting.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tanks_scaffold</a> &gt; <a href="index.source.html" class="el_package">Tanks</a> &gt; <span class="el_source">Setting.java</span></div><h1>Setting.java</h1><pre class="source lang-java linenums">package Tanks;
+
+/** Import necessary library */
+import processing.core.PApplet;
+import processing.data.JSONObject;
+import java.io.*;
+import java.util.*;
+
+/**
+ * Represent Setting object
+ * Each round will have one Setting object
+ */
+public class Setting extends PApplet{
+
+    /** Relative path of the backgrounds */
+    private final String background;
+
+    /** RGB values of the colour of the terrain */
+<span class="fc" id="L19">    private final int[] foregroundColour = new int[3];</span>
+
+    /** Relative path of the tree image */
+    private String tree;
+
+    /** Initialise the Layout object */
+<span class="fc" id="L25">    private final Layout layoutObj = new Layout();</span>
+
+    /** Initialise the Wind object */
+    private final Wind windObj;
+
+    /**Initialise the random object */
+<span class="fc" id="L31">    private Random random = new Random();</span>
+
+    /** The App object running the program */
+    private final App app;
+
+    /**
+     * Constructor for the class
+     * Extract all the information from JSON objects and assign value for attributes
+     * @param jsonObject stores all the information for the setting of each level
+     * @param playersColour store all the players' character and their colours
+     */
+<span class="fc" id="L42">    public Setting(App app, JSONObject jsonObject, JSONObject playersColour) {</span>
+<span class="fc" id="L43">        String layout = jsonObject.getString(&quot;layout&quot;);</span>
+<span class="fc" id="L44">        this.background = &quot;/src/main/resources/Tanks/&quot; + jsonObject.getString(&quot;background&quot;);</span>
+<span class="fc" id="L45">        String foregroundColour = jsonObject.getString(&quot;foreground-colour&quot;);</span>
+<span class="fc" id="L46">        String[] foreground = foregroundColour.split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (int i = 0; i &lt; 3; i++)</span>
+        {
+<span class="fc" id="L49">            this.foregroundColour[i] = Integer.parseInt(foreground[i]);</span>
+        }
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (jsonObject.hasKey(&quot;trees&quot;))</span>
+        {
+<span class="fc" id="L54">            this.tree = &quot;src/main/resources/Tanks/&quot; + jsonObject.getString(&quot;trees&quot;);</span>
+        }
+
+<span class="fc" id="L57">        this.windObj = new Wind(this.random);</span>
+<span class="fc" id="L58">        this.app = app;</span>
+
+        try
+        {   
+<span class="fc" id="L62">            FileReader fileReader = new FileReader(layout);</span>
+<span class="fc" id="L63">            BufferedReader bufferedReader = new BufferedReader(fileReader);</span>
+
+<span class="fc" id="L65">            ArrayList&lt;String&gt; lines = new ArrayList&lt;String&gt;();</span>
+            String line;
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            while ((line = bufferedReader.readLine()) != null)</span>
+            {
+<span class="fc" id="L69">                lines.add(line);</span>
+            }
+<span class="fc" id="L71">            fileReader.close();</span>
+<span class="fc" id="L72">            bufferedReader.close();</span>
+
+
+<span class="fc" id="L75">            ArrayList&lt;Character&gt; tankArrayKey = new ArrayList&lt;Character&gt;();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            for (char ch = 'A'; ch &lt;= 'I'; ch++)</span>
+            {
+<span class="fc" id="L78">                tankArrayKey.add(ch);</span>
+            }
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            for (char ch = '0'; ch &lt;= '9'; ch++)</span>
+            {
+<span class="fc" id="L83">                tankArrayKey.add(ch);</span>
+            }
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            while (lines.size() &gt; 20)</span>
+            {
+<span class="fc" id="L88">                lines.remove(lines.size() - 1);</span>
+            }
+<span class="fc" id="L90">            int x = lines.size() - 1;</span>
+
+<span class="fc" id="L92">            char[][] layoutArray = new char[20][28];</span>
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            while (x &gt;= 0)</span>
+            {   
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                for (int i = 0; i &lt; lines.get(x).length(); i++)</span>
+                {   
+<span class="fc" id="L98">                    char symbol = lines.get(x).charAt(i);</span>
+<span class="fc" id="L99">                    layoutArray[x][i] = symbol;</span>
+                }
+<span class="fc" id="L101">                x--;</span>
+            }
+
+
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">            for (int i = 0; i &lt; layoutArray[1].length; i++)</span>
+            {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                for (int j = 0; j &lt; layoutArray.length; j++)</span>
+                {   
+<span class="fc" id="L110">                    char symbol = layoutArray[j][i];</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">                    if (symbol == 'X')</span>
+                    {
+<span class="fc" id="L113">                        this.layoutObj.createTerrain(i, j);</span>
+                    }
+                    
+                }
+            }
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">            for (int i = 0; i &lt; layoutArray[1].length; i++)</span>
+            {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                for (char[] chars : layoutArray)</span>
+                {
+<span class="fc" id="L123">                    char symbol = chars[i];</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">                    if (symbol == 'T')</span>
+                    {
+<span class="fc" id="L126">                        this.layoutObj.createTree(i);</span>
+                    }
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                    else if (tankArrayKey.contains(symbol))</span>
+                    {
+<span class="fc" id="L130">                        int[] colour = new int[3];</span>
+<span class="fc" id="L131">                        String value = playersColour.getString(Character.toString(symbol));</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">                        if (value.equals(&quot;random&quot;))</span>
+                        {
+<span class="fc" id="L134">                            Random colourRandom = new Random();</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">                            for (int z = 0; z &lt; colour.length; z++)</span>
+                            {
+<span class="fc" id="L137">                                colour[z] = colourRandom.nextInt(256);</span>
+                            }
+<span class="fc" id="L139">                        }</span>
+                        else
+                        {
+<span class="fc" id="L142">                            String[] valueArray = value.split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">                            for (int k = 0; k &lt; 3; k++)</span>
+                            {
+<span class="fc" id="L145">                                colour[k] = Integer.parseInt(valueArray[k]);</span>
+                            }
+                        }
+<span class="fc" id="L148">                        this.layoutObj.createTank(i, symbol, colour, windObj);</span>
+                    }
+                }
+            }
+        }
+<span class="nc" id="L153">        catch (IOException e)</span>
+        {
+<span class="nc" id="L155">            e.printStackTrace();</span>
+<span class="fc" id="L156">        }</span>
+<span class="fc" id="L157">    }</span>
+
+    /**
+     * Return the relative path of the background image
+     * @return the string of the relative path
+     */
+    public String getBackground()
+    {
+<span class="fc" id="L165">        return this.background;</span>
+    }
+
+    /**
+     * Return the RGB values of the colour for terrain
+     * @return the array storing RGB values
+     */
+    public int[] getForegroundColour()
+    {
+<span class="fc" id="L174">        return this.foregroundColour;</span>
+    }
+
+    /**
+     * Return the Layout object
+     * @return the Layout object
+     */
+    public Layout getLayout()
+    {
+<span class="fc" id="L183">        return this.layoutObj;</span>
+    }
+
+    /**
+     * Return the relative path of tree image
+     * @return the string storing the relative path
+     */
+    public String getTree()
+    {
+<span class="fc" id="L192">        return this.tree;</span>
+    }
+
+    /**
+     * Return the Wind object
+     * @return the Wind object
+     */
+    public Wind getWind()
+    {
+<span class="fc" id="L201">        return this.windObj;</span>
+    }
+
+    /**
+     * Set the random object to the new random object
+     * @param random, a new random object
+     */
+    public void setRandom(Random random) {
+<span class="nc" id="L209">        this.random = random;</span>
+<span class="nc" id="L210">    }</span>
+
+    /**
+     * Return the random object
+     * @return the random object
+     */
+    public Random getRandom() {
+<span class="fc" id="L217">        return this.random;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Explosion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tanks_scaffold</a> &gt; <a href="index.source.html" class="el_package">Tanks</a> &gt; <span class="el_source">Explosion.java</span></div><h1>Explosion.java</h1><pre class="source lang-java linenums">package Tanks;
+
+/**
+ * Represent the explosion of tanks and projectiles
+ */
+public class Explosion {
+    /** Declare a float number storing the X-coordinate of the centre of the explosion */
+    float x;
+
+    /** Declare a float number storing the Y-coordinate of the centre of the explosion */
+    float y;
+
+    /** Declare a float number storing the maximum of the radius*/
+    float maxRadius;
+
+    /** Declare a float number storing the duration*/
+    float duration;
+
+    /** Declare a variable storing the start time in millisecond*/
+    long startTime;
+
+    /** Declare a boolean to check whether the explosion has completed */
+    boolean completed;
+
+    /**
+     * Constructor of the explosion object
+     * @param duration, the duration of the explosion
+     */
+<span class="fc" id="L29">    public Explosion(float duration) {</span>
+<span class="fc" id="L30">        this.maxRadius = 30;</span>
+<span class="fc" id="L31">        this.duration = duration;</span>
+<span class="fc" id="L32">        this.startTime = 0;</span>
+<span class="fc" id="L33">        this.completed = false;</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Update the radius of the explosion
+     * @param x, the X-coordinate of the explosion
+     * @param y, the Y-coordinate of the explosion
+     * @return the current radius
+     */
+    public float[] updateExplosion(float x, float y) {
+<span class="fc" id="L43">        this.x = x;</span>
+<span class="fc" id="L44">        this.y = y;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (startTime == 0) {</span>
+<span class="fc" id="L46">            startTime = System.currentTimeMillis();</span>
+        }
+<span class="fc" id="L48">        float elapsedTime = System.currentTimeMillis() - startTime;</span>
+<span class="fc" id="L49">        float[] radius = new float[3];</span>
+<span class="fc" id="L50">        float redRadius = ((float) maxRadius) * elapsedTime / duration;</span>
+<span class="fc" id="L51">        float orangeRadius = ((float) 0.5 * maxRadius) * elapsedTime / duration;</span>
+<span class="fc" id="L52">        float yellowRadius = ((float) 0.2 * maxRadius) * elapsedTime / duration;</span>
+
+<span class="fc" id="L54">        radius[0] = redRadius;</span>
+<span class="fc" id="L55">        radius[1] = orangeRadius;</span>
+<span class="fc" id="L56">        radius[2] = yellowRadius;</span>
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (elapsedTime &gt;= duration) {</span>
+<span class="fc" id="L59">            completed = true;</span>
+        }
+<span class="fc" id="L61">        return radius;</span>
+    }
+
+    /**
+     * Change the maximum value of the radius
+     * @param newRadius, the new value of the radius
+     */
+    public void changeRadius(float newRadius) {
+<span class="nc" id="L69">        this.maxRadius = newRadius;</span>
+<span class="nc" id="L70">    }</span>
+
+    /**
+     * Get the maximum radius of the explosion
+     * @return the maximum radius of the explosion
+     */
+    public int getMaxRadius() {
+<span class="fc" id="L77">        return (int)this.maxRadius;</span>
+    }
+
+    /**
+     * Return true if the explosion is completed
+     * @return a boolean checking whether the explosion is completed
+     */
+    public boolean isCompleted() {
+<span class="fc" id="L85">        return this.completed;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tank.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tanks_scaffold</a> &gt; <a href="index.source.html" class="el_package">Tanks</a> &gt; <span class="el_source">Tank.java</span></div><h1>Tank.java</h1><pre class="source lang-java linenums">package Tanks;
+import java.util.*;
+
+/** Represents Tank data */
+public class Tank {
+
+    /** Declare the X-coordinate of the Tank */
+    private int x;
+
+    /** Declare the Y-coordinate of the Tank */
+    private float y;
+
+    /** Declare X-coordinate of the Tank turret */
+    private float turretX;
+
+    /** Declare the Y-coordinate of the Tank turret */
+    private float turretY;
+
+    /** Declare the Y-coordinate that the Tank falls to (if falling) */
+    private float yFalling;
+
+    /** Declare the character of the Tank object */
+    private final char character;
+
+    /** Declare the RGB values of the colour of the Tank */
+    private int[] colour;
+
+    /** Declare the health of the tank */
+    private int health;
+
+    /** Declare the power of the tank */
+    private int power;
+
+    /** Declare the score of tank */
+    private int score;
+
+    /** Declare the number of remaining parachutes */
+    private int parachute;
+
+    /** Declare the fuel of the Tank */
+    private int fuel;
+
+    /** Declare the angle between the turret with the X-axis */
+    private double angle;
+
+    /** Declare the Wind object */
+    private final Wind windObj;
+
+    /** Declare the boolean checking whether the Tank is falling */
+    private boolean falling;
+
+    /** Declare the boolean checking whether the Tank has exploded */
+    private boolean exploded;
+
+    /** Declare the Projectile object that hit the Tank, or hit the terrain causing the Tank to fall down */
+    private Projectile hitBy;
+
+    /** Declare the Explosion object for the Tank */
+    private final Explosion explosion;
+
+    /** Declare the health that the Tank lost when falling down */
+    private int damageWhenFalling;
+
+    /** Declare a boolean to check whether the statistics are calculated */
+    private boolean completed;
+
+    /** Declare the ArrayList storing all the projectiles belong to the Tank */
+<span class="fc" id="L68">    private final ArrayList&lt;Projectile&gt; activeProjectiles = new ArrayList&lt;&gt;();</span>
+
+    /** Declare the boolean checking whether the Tank has shield */
+    private boolean shield;
+
+    /** Declare the App object running this program */
+    private final App app;
+
+    /** Declare the teleport object for the tank */
+    private final Teleport teleport;
+
+    /**
+     * Constructor of the Tank class
+     * Assign values to attributes
+     * @param x the value of X-coordinate, ranging from 0 to 864
+     * @param y the value of Y-coordinate, ranging from 0 to 640
+     * @param character the character of the Tank
+     * @param colour RGB values of the colour of the tank
+     * @param windObj the Wind object affecting the tank
+     * @param app the App object running the program
+     */
+<span class="fc" id="L89">    public Tank(int x, float y, char character, int[] colour, Wind windObj, App app) {</span>
+<span class="fc" id="L90">        this.app = app;</span>
+<span class="fc" id="L91">        this.x = x;</span>
+<span class="fc" id="L92">        this.y = y;</span>
+<span class="fc" id="L93">        this.character = character;</span>
+<span class="fc" id="L94">        this.colour = colour;</span>
+<span class="fc" id="L95">        this.health = 100;</span>
+<span class="fc" id="L96">        this.fuel = 250;</span>
+<span class="fc" id="L97">        this.power = 50;</span>
+<span class="fc" id="L98">        this.parachute = 1;</span>
+<span class="fc" id="L99">        this.score = 0;</span>
+<span class="fc" id="L100">        this.windObj = windObj;</span>
+<span class="fc" id="L101">        this.falling = false;</span>
+<span class="fc" id="L102">        this.explosion = new Explosion(200);</span>
+<span class="fc" id="L103">        this.exploded = false;</span>
+<span class="fc" id="L104">        this.damageWhenFalling = 0;</span>
+<span class="fc" id="L105">        this.angle = Math.PI / 2;</span>
+<span class="fc" id="L106">        this.shield = false;</span>
+<span class="fc" id="L107">        this.teleport = new Teleport(this.colour);</span>
+<span class="fc" id="L108">        calculateTurretCoordinates();</span>
+<span class="fc" id="L109">    }</span>
+
+    /**
+     * Calculate the statistics for the tank turret
+     */
+    private void calculateTurretCoordinates() {
+<span class="fc" id="L115">        int turretLength = 15;</span>
+<span class="fc" id="L116">        this.turretX = (float) (Math.cos(this.angle)* turretLength + this.x);</span>
+<span class="fc" id="L117">        this.turretY = (float) (-Math.sin(this.angle)* turretLength + this.y - 4);</span>
+<span class="fc" id="L118">    }</span>
+
+    /**
+     * Return the X-coordinate of the Tank
+     * @return the X-coordinate of the Tank
+     */
+    public int getX()
+    {
+<span class="fc" id="L126">        return this.x;</span>
+    }
+
+    /**
+     * Set the new X-coordinate to the current tank
+     * @param x, new X-coordinate
+     */
+    public void setX(int x)
+    {
+<span class="fc" id="L135">        this.x = x;</span>
+<span class="fc" id="L136">    }</span>
+
+    /**
+     * Return the Y-coordinate of the Tank
+     * @return the Y-coordinate of the Tank
+     */
+    public float getY()
+    {
+<span class="fc" id="L144">        return this.y;</span>
+    }
+
+    /**
+     * Assign the Y-coordinate to the new value Y
+     * @param y the new Y-coordinates
+     */
+    public void setY(float y)
+    {
+<span class="fc" id="L153">        this.y = y;</span>
+<span class="fc" id="L154">    }</span>
+
+    /**
+     * Return the character of the tank
+     * @return the character of the tank
+     */
+    public char getCharacter()
+    {
+<span class="fc" id="L162">        return this.character;</span>
+    }
+
+    /**
+     * Return the RGB values of the colour of the tank
+     * @return the RGB values of the colour of the tank
+     */
+    public int[] getColour()
+    {
+<span class="fc" id="L171">        return this.colour;</span>
+    }
+
+    /**
+     * Assign a new colour for the tank
+     */
+    public void setColour(int[] colour) {
+<span class="fc" id="L178">        this.colour = colour;</span>
+<span class="fc" id="L179">    }</span>
+
+    /**
+     * Return the fuel of the tank
+     * @return the fuel of the tank
+     */
+    public int getFuel()
+    {
+<span class="fc" id="L187">        return this.fuel;</span>
+    }
+
+    /**
+     * Return the power of the tank
+     * @return the power of the tank
+     */
+    public int getPower()
+    {
+<span class="fc" id="L196">        return this.power;</span>
+    }
+
+    /**
+     * Return the number of remaining parachutes of the tank
+     * @return the number of remaining parachutes of the tank
+     */
+    public int getParachute()
+    {
+<span class="fc" id="L205">        return this.parachute;</span>
+    }
+
+    /**
+     * Change the number of remaining parachute
+     * @param change, the change in parachute, could be positive or negative
+     */
+    public void setParachute (int change) {
+<span class="fc bfc" id="L213" title="All 2 branches covered.">        if (this.parachute + change &gt;= 0) {</span>
+<span class="fc" id="L214">            this.parachute += change;</span>
+        }
+<span class="fc" id="L216">    }</span>
+
+    /**
+     * Return the statistics of the tank's turret
+     * @return the statistics of the tank's turret
+     */
+    public float[] getTankTurret() {
+<span class="fc" id="L223">        float[] result = new float[4];</span>
+
+<span class="fc" id="L225">        result[0] = this.x;</span>
+<span class="fc" id="L226">        result[1] = this.y - 4;</span>
+<span class="fc" id="L227">        result[2] = this.turretX;</span>
+<span class="fc" id="L228">        result[3] = this.turretY;</span>
+<span class="fc" id="L229">        return result;</span>
+    }
+
+    /**
+     * Return the score of the Tank
+     * @return the score of the Tank
+     */
+    public int getScore()
+    {
+<span class="fc" id="L238">        return this.score;</span>
+    }
+
+    /**
+     * Return the health of the tank
+     * @return the health of the tank
+     */
+    public int getHealth()
+    {
+<span class="fc" id="L247">        return this.health;</span>
+    }
+
+    /**
+     * Return the angle between the tank turret with the X-axis
+     * @return the angle between the tank turret with the X-axis
+     */
+    public double getAngle()
+    {
+<span class="fc" id="L256">        return angle;</span>
+    }
+
+    /**
+     * Return the ArrayList storing all the Projectile objects belong to the tank
+     * @return the ArrayList storing all the Projectile objects belong to the tank
+     */
+    public ArrayList&lt;Projectile&gt; getProjectile()
+    {
+<span class="fc" id="L265">        return this.activeProjectiles;</span>
+    }
+
+    /**
+     * Return the Projectile hitting the tank, or hitting the terrain causing the tank to fall down
+     * @return the Projectile hitting the tank, or hitting the terrain causing the tank to fall down
+     */
+    public Projectile getHitByProjectile()
+    {
+<span class="fc" id="L274">        return this.hitBy;</span>
+    }
+
+    /**
+     * Calculate the health of the tank
+     * @param health the change in health in either negative or positive
+     */
+    public void setHealth(int health) {
+<span class="fc bfc" id="L282" title="All 2 branches covered.">        if (this.health + health &lt;= 0)</span>
+        {
+<span class="fc" id="L284">            this.health = 0;</span>
+        }
+<span class="fc bfc" id="L286" title="All 2 branches covered.">        else if (this.health + health &gt;= 100)</span>
+        {
+<span class="fc" id="L288">            this.health = 100;</span>
+        }
+        else
+        {
+<span class="fc" id="L292">            this.health += health;</span>
+        }
+        
+<span class="fc bfc" id="L295" title="All 2 branches covered.">        if (this.power &gt; this.health) </span>
+        {
+<span class="fc" id="L297">            this.power = this.health;</span>
+        }
+<span class="fc" id="L299">    }</span>
+
+    /**
+     * Calculate the score of the tank
+     * @param score the change in the score in either positive or negative
+     */
+    public void setScore(int score)
+    {
+<span class="fc" id="L307">        this.score += score;</span>
+<span class="fc" id="L308">    }</span>
+
+    /**
+     * Move the tank
+     * @param direction the direction the tank will move
+     * @param y the new Y-coordinate value for the tank (calculated base on the Y-coordinate of the terrain)
+     */
+    public void move(String direction, float y) {
+<span class="fc bfc" id="L316" title="All 4 branches covered.">        if (this.fuel &gt; 0 &amp;&amp; !this.falling)</span>
+        {   
+<span class="fc" id="L318">            int FPS = App.FPS;</span>
+<span class="fc" id="L319">            float timeBetweenFrames = (float) (1.0)/FPS;</span>
+<span class="fc" id="L320">            float speed = (float) 60;</span>
+
+<span class="fc bfc" id="L322" title="All 2 branches covered.">            if (direction.equals(&quot;left&quot;))</span>
+            {
+<span class="pc bpc" id="L324" title="1 of 2 branches missed.">                if (this.x &gt;= 2)</span>
+                {
+<span class="fc" id="L326">                    this.x -= (int) (speed * timeBetweenFrames);</span>
+<span class="fc" id="L327">                    setY(y);</span>
+<span class="fc" id="L328">                    calculateTurretCoordinates();</span>
+<span class="fc" id="L329">                    setFuel(-1);</span>
+                }
+            }
+<span class="pc bpc" id="L332" title="1 of 2 branches missed.">            else if (direction.equals(&quot;right&quot;))</span>
+            {
+<span class="pc bpc" id="L334" title="1 of 2 branches missed.">                if (this.x &lt;= 862)</span>
+                {   
+<span class="fc" id="L336">                    this.x += (int) (speed * timeBetweenFrames);</span>
+<span class="fc" id="L337">                    setY(y);</span>
+<span class="fc" id="L338">                    calculateTurretCoordinates();</span>
+<span class="fc" id="L339">                    setFuel(-1);</span>
+                }
+            }
+
+        }
+<span class="fc" id="L344">    }</span>
+
+    /**
+     * Rotate the tank's turret
+     * @param direction the direction that the turret will rotate
+     */
+    public void rotateTurret(String direction) {
+<span class="fc" id="L351">        int FPS = App.FPS;</span>
+<span class="fc" id="L352">        float timeBetweenFrames = (float) (1.0)/FPS;</span>
+<span class="fc" id="L353">        float speed = (float) 3;</span>
+<span class="fc" id="L354">        float change = speed * timeBetweenFrames;</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">        if (direction.equals(&quot;up&quot;))</span>
+        {
+<span class="fc bfc" id="L357" title="All 2 branches covered.">            if (this.angle + change &lt;= Math.PI) {</span>
+<span class="fc" id="L358">                this.angle += change;</span>
+            } else {
+<span class="fc" id="L360">                this.angle = Math.PI;</span>
+            }
+<span class="fc" id="L362">            calculateTurretCoordinates();</span>
+
+        }
+<span class="fc bfc" id="L365" title="All 2 branches covered.">        else if (direction.equals(&quot;down&quot;))</span>
+        {   
+<span class="fc bfc" id="L367" title="All 2 branches covered.">            if (this.angle - change &gt;= 0) {</span>
+<span class="fc" id="L368">                this.angle -= change;</span>
+            } else {
+<span class="fc" id="L370">                this.angle = 0;</span>
+            }
+<span class="fc" id="L372">            calculateTurretCoordinates();</span>
+        }
+<span class="fc" id="L374">    }</span>
+
+    /**
+     * Increase or decrease the power
+     * @param key the key that the player press
+     */
+    public void setPower(String key) {
+<span class="fc" id="L381">        int increment = (int) (36/30);</span>
+<span class="fc bfc" id="L382" title="All 2 branches covered.">        if (key.equals(&quot;S&quot;)) {</span>
+<span class="fc bfc" id="L383" title="All 2 branches covered.">            if (this.power - increment &gt;= 0) {</span>
+<span class="fc" id="L384">                this.power -= increment;</span>
+            }
+<span class="pc bpc" id="L386" title="1 of 2 branches missed.">            if (this.power &lt; 0) {</span>
+<span class="nc" id="L387">                this.power = 0;</span>
+            }
+<span class="pc bpc" id="L389" title="1 of 2 branches missed.">        } else if (key.equals(&quot;W&quot;)) {</span>
+<span class="fc bfc" id="L390" title="All 2 branches covered.">            if (this.power + increment &lt;= this.health) {</span>
+<span class="fc" id="L391">                this.power += increment;</span>
+            } else {
+<span class="fc" id="L393">                this.power = this.health;</span>
+            }
+        }
+<span class="fc" id="L396">    }</span>
+
+    /**
+     * Calculate a new fuel
+     * @param fuel the change in fuel in either negative or positive
+     */
+    public void setFuel(int fuel) {
+<span class="fc bfc" id="L403" title="All 2 branches covered.">        if (this.fuel + fuel &lt;= 0) {</span>
+<span class="fc" id="L404">            this.fuel = 0;</span>
+        }
+        else {
+<span class="fc" id="L407">            this.fuel += fuel;</span>
+        }
+<span class="fc" id="L409">    }</span>
+
+    /**
+     * Create a projectile and fire it
+     */
+    public void fire() {
+<span class="fc" id="L415">        Projectile currentProjectile = new Projectile(this, this.windObj, this.app);</span>
+<span class="fc" id="L416">        this.activeProjectiles.add(currentProjectile);</span>
+<span class="fc" id="L417">    }</span>
+
+    /**
+     * Start the falling period
+     * @param newY The new Y-coordinate of the terrain after changing
+     * @param projectile The Projectile object hitting the terrain causing the tank falling down
+     */
+    public void setFalling(float newY, Projectile projectile) {
+<span class="fc" id="L425">        this.yFalling = newY;</span>
+<span class="fc" id="L426">        this.hitBy = projectile;</span>
+<span class="pc bpc" id="L427" title="1 of 2 branches missed.">        if (!this.isFalling())</span>
+        {
+<span class="fc" id="L429">            this.damageWhenFalling = 0;</span>
+        }
+<span class="fc" id="L431">        this.falling = true;</span>
+        
+<span class="fc" id="L433">    }</span>
+
+    /**
+     * Check whether the Tank is falling
+     * @return the boolean checking whether the Tank is falling
+     */
+    public boolean isFalling()
+    {
+<span class="fc" id="L441">        return this.falling;</span>
+    }
+
+    /**
+     * Update the X and Y coordinates of the tank while falling
+     * @return the lost health when the tank is landed
+     */
+    public int falling() {
+        int fallingRate;
+<span class="fc bfc" id="L450" title="All 2 branches covered.">        if (this.parachute &gt; 0) {</span>
+<span class="fc" id="L451">            fallingRate = 60/App.FPS;</span>
+<span class="fc bfc" id="L452" title="All 2 branches covered.">            if (this.y + fallingRate &lt; this.yFalling) {</span>
+<span class="fc" id="L453">                this.y += fallingRate;</span>
+            }
+<span class="pc bpc" id="L455" title="1 of 4 branches missed.">            else if (this.y &lt; this.yFalling &amp;&amp; this.y + fallingRate &gt; this.yFalling) {</span>
+<span class="fc" id="L456">                this.y = this.yFalling;</span>
+            }
+            else {
+<span class="fc" id="L459">                setParachute(-1);</span>
+<span class="fc" id="L460">                this.falling = false;</span>
+            }
+        }
+        else {
+<span class="fc" id="L464">            fallingRate = 120/App.FPS;</span>
+<span class="fc bfc" id="L465" title="All 2 branches covered.">            if (this.y + fallingRate &lt; this.yFalling) {</span>
+<span class="fc" id="L466">                this.y += fallingRate;</span>
+<span class="fc" id="L467">                damageWhenFalling += fallingRate;</span>
+            }
+<span class="pc bpc" id="L469" title="1 of 4 branches missed.">            else if (this.y &lt; this.yFalling &amp;&amp; this.y + fallingRate &gt; this.yFalling) {</span>
+<span class="fc" id="L470">                damageWhenFalling += (int) Math.abs(this.yFalling - this.y);</span>
+<span class="fc" id="L471">                this.y = this.yFalling;</span>
+            }
+            else {
+<span class="fc bfc" id="L474" title="All 2 branches covered.">                if (this.damageWhenFalling &gt; this.health) {</span>
+<span class="fc" id="L475">                    this.damageWhenFalling = this.health;</span>
+                }
+<span class="fc" id="L477">                setHealth(-damageWhenFalling);</span>
+<span class="fc" id="L478">                calculateTurretCoordinates();</span>
+<span class="fc" id="L479">                return damageWhenFalling;</span>
+            }
+        }
+<span class="fc" id="L482">        calculateTurretCoordinates();</span>
+<span class="fc" id="L483">        return 0;</span>
+    }
+
+    /**
+     * Check whether the tank is alive
+     * @return the boolean checking whether the tank is alive
+     */
+    public boolean isAlive()
+    {
+<span class="pc bpc" id="L492" title="1 of 2 branches missed.">        return this.health &gt; 0;</span>
+    }
+
+    /**
+     * Update the animation of the explosion when the tank is dead
+     * @return the radius of 3 circle in the animation of the explosion
+     */
+    public float[] updateExplosion() {
+<span class="fc" id="L500">        float[] radius = new float[3];</span>
+<span class="pc bpc" id="L501" title="1 of 2 branches missed.">        if (this.y &gt;= 640) {</span>
+<span class="nc" id="L502">            this.explosion.changeRadius(15);</span>
+<span class="nc" id="L503">            this.explosion.updateExplosion(this.x, this.y);</span>
+        }
+<span class="fc" id="L505">        radius = this.explosion.updateExplosion(this.x, this.y);</span>
+<span class="fc" id="L506">        return radius;</span>
+    }
+
+    /**
+     * Check whether the explosion animation has completed
+     * @return the boolean checking whether the explosion animation has completed
+     */
+    public boolean completeExploding() {
+<span class="fc" id="L514">        this.exploded = this.explosion.isCompleted();</span>
+<span class="fc" id="L515">        return this.exploded;</span>
+    }
+
+    /** Check the position of the tank
+     * Set the health to 0 if the tank is out of the window
+     */
+    public void checkTankBelowScreen() {
+<span class="pc bpc" id="L522" title="1 of 2 branches missed.">        if (this.y &gt;= 640)</span>
+        {
+<span class="nc" id="L524">            this.health = 0;</span>
+        }
+<span class="fc" id="L526">    }</span>
+
+    /**
+     * Return the boolean checking whether all the statistics has been calculated after the tank is dead
+     * @return the boolean checking whether all the statistics has been calculated after the tank is dead
+     */
+    public boolean isCompleted()
+    {
+<span class="fc" id="L534">        return this.completed;</span>
+    }
+
+    /**
+     * Set the state of the Tank object to completed (true)
+     */
+    public void setCompleted()
+    {
+<span class="fc" id="L542">        this.completed = true;</span>
+<span class="fc" id="L543">    }</span>
+
+    /**
+     * Return the Explosion object
+     * @return the Explosion object
+     */
+    public Explosion getExplosion()
+    {
+<span class="fc" id="L551">        return this.explosion;</span>
+    }
+
+    /**
+     * Spend 20 points to increase 20 health
+     */
+    public void repairKit() {
+<span class="pc bpc" id="L558" title="1 of 2 branches missed.">        if (this.score &gt;= 20)</span>
+        {
+<span class="pc bpc" id="L560" title="1 of 4 branches missed.">            if (this.health &lt; 100 &amp;&amp; this.health + 20 &gt; 100) {</span>
+<span class="fc" id="L561">                setScore(-20);</span>
+<span class="fc" id="L562">                setHealth(100 - this.health);</span>
+<span class="pc bpc" id="L563" title="1 of 2 branches missed.">            } else if (this.health &lt; 100) {</span>
+<span class="fc" id="L564">                setScore(-20);</span>
+<span class="fc" id="L565">                setHealth(20);</span>
+            }
+        }
+<span class="fc" id="L568">    }</span>
+
+    /**
+     * Spend 10 points to increase 200 health
+     */
+    public void addFuel() {
+<span class="fc bfc" id="L574" title="All 2 branches covered.">        if (this.score &gt;= 10)</span>
+        {
+<span class="fc" id="L576">            setScore(-10);</span>
+<span class="fc" id="L577">            setFuel(200);</span>
+        }
+<span class="fc" id="L579">    }</span>
+
+    /**
+     * Spend 20 points to get shield
+     */
+    public void enableShield() {
+<span class="fc bfc" id="L585" title="All 2 branches covered.">        if (this.score &gt;= 20)</span>
+        {
+<span class="fc bfc" id="L587" title="All 2 branches covered.">            if (!this.shield)</span>
+            {
+<span class="fc" id="L589">                this.score -= 20;</span>
+<span class="fc" id="L590">                this.shield = true;</span>
+            }
+        }
+<span class="fc" id="L593">    }</span>
+
+    /**
+     * Check whether the current tank has shield
+     * @return the boolean checking whether the current tank has shield
+     */
+    public boolean getShield() {
+<span class="fc" id="L600">        return this.shield;</span>
+    }
+
+    /**
+     * Disable the shield when is hit
+     */
+    public void disableShield()  {
+<span class="fc" id="L607">        this.shield = false;</span>
+<span class="fc" id="L608">    }</span>
+
+    /**
+     * Check the location of teleport and complete teleporting
+     */
+    public void teleport() {
+<span class="pc bpc" id="L614" title="1 of 2 branches missed.">        if (this.teleport.getX() != this.x)</span>
+        {
+<span class="fc" id="L616">            this.teleport.setTeleport();</span>
+        }
+
+<span class="pc bpc" id="L619" title="1 of 2 branches missed.">        if (!this.teleport.completedTeleport())</span>
+        {
+<span class="nc" id="L621">            this.teleport.resetTeleport();</span>
+        }
+        else
+        {
+<span class="fc" id="L625">            setScore(-15);</span>
+<span class="fc" id="L626">            setX(this.teleport.getX());</span>
+<span class="fc" id="L627">            setY(this.teleport.getY());</span>
+<span class="fc" id="L628">            calculateTurretCoordinates();</span>
+        }
+<span class="fc" id="L630">        this.teleport.resetTeleport();</span>
+<span class="fc" id="L631">    }</span>
+
+    /**
+     * Checking whether the current tank is using teleport
+     * @return the boolean checking whether the current tank is using teleport
+     */
+    public Teleport getTeleport()
+    {
+<span class="fc" id="L639">        return this.teleport;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

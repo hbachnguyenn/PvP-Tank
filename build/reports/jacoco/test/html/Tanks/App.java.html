@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tanks_scaffold</a> &gt; <a href="index.source.html" class="el_package">Tanks</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package Tanks;
+
+/**
+ * Import necessary library
+ */
+import processing.core.PApplet;
+import processing.core.PImage;
+import processing.data.JSONObject;
+import processing.event.KeyEvent;
+import java.util.*;
+
+public class App extends PApplet {
+
+    /** The size of cell */
+    public static final int CELLSIZE = 32;
+
+    /** The number of cell per row */
+    public static final int BOARD_WIDTH = 28;
+
+    /** The number of cell per column */
+    public static final int BOARD_HEIGHT = 20;
+
+    /** The width of the window (pixel) */
+<span class="fc" id="L24">    public static int WIDTH = (CELLSIZE * (BOARD_WIDTH - 1));</span>
+
+    /** The height of the window (pixel) */
+<span class="fc" id="L27">    public static int HEIGHT = (CELLSIZE * BOARD_HEIGHT);</span>
+
+    /** Initialise the FPS */
+    public static final int FPS = 30;
+
+    /** Declare the string for config path */
+    public String configPath;
+
+    /** Initialise Random object */
+<span class="fc" id="L36">    public static Random random = new Random();</span>
+
+    /** Declare Process object */
+    public Process process;
+
+    /** Declare the HashMap storing background images of all round */
+<span class="fc" id="L42">    public HashMap&lt;Integer, PImage&gt; backgroundImage = new HashMap&lt;&gt;();</span>
+
+    /** Declare the HashMap storing tree images of all round */
+<span class="fc" id="L45">    public HashMap&lt;Integer, PImage&gt; treeImage = new HashMap&lt;&gt;();</span>
+
+    /** Declare the HashMap storing other images */
+<span class="fc" id="L48">    public HashMap&lt;String, PImage&gt; otherImage = new HashMap&lt;&gt;();</span>
+
+
+    /**
+     * Constructs a new instance of the App class with a default configuration path.
+     */
+<span class="fc" id="L54">    public App() {</span>
+<span class="fc" id="L55">        this.configPath = &quot;config.json&quot;;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Initialise the setting of the window size.
+     */
+	@Override
+    public void settings() {
+<span class="fc" id="L63">        size(WIDTH, HEIGHT);</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Set frame rate to 30
+     * Create a new Process object and assign it to this.process
+     * Assign the setting of the first round to this.currentSetting
+     */
+	@Override
+    public void setup() {
+<span class="fc" id="L73">        frameRate(FPS);</span>
+<span class="fc" id="L74">        setUpGame();</span>
+<span class="fc" id="L75">        ArrayList&lt;Setting&gt; settings = this.process.getSettingList();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        for (int i = 0; i &lt; settings.size(); i++) {</span>
+<span class="fc" id="L77">            String backgroundPath = settings.get(i).getBackground();</span>
+<span class="fc" id="L78">            PImage backgroundImg = loadImage(backgroundPath);</span>
+<span class="fc" id="L79">            backgroundImage.put(i, backgroundImg);</span>
+
+<span class="fc" id="L81">            String treePath = settings.get(i).getTree();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            if (treePath != null) {</span>
+<span class="fc" id="L83">                PImage treeImg = loadImage(treePath);</span>
+<span class="fc" id="L84">                treeImage.put(i, treeImg);</span>
+            }
+        }
+<span class="fc" id="L87">        PImage wind1 = loadImage(&quot;src/main/resources/Tanks/wind.png&quot;);</span>
+<span class="fc" id="L88">        PImage wind2 = loadImage(&quot;src/main/resources/Tanks/wind-1.png&quot;);</span>
+<span class="fc" id="L89">        PImage fuel = loadImage(&quot;src/main/resources/Tanks/fuel.png&quot;);</span>
+<span class="fc" id="L90">        PImage parachute = loadImage(&quot;src/main/resources/Tanks/parachute.png&quot;);</span>
+
+<span class="fc" id="L92">        otherImage.put(&quot;positiveWind&quot;, wind1);</span>
+<span class="fc" id="L93">        otherImage.put(&quot;negativeWind&quot;, wind2);</span>
+<span class="fc" id="L94">        otherImage.put(&quot;fuel&quot;, fuel);</span>
+<span class="fc" id="L95">        otherImage.put(&quot;parachute&quot;, parachute);</span>
+<span class="fc" id="L96">    }</span>
+
+    /**
+     * Receive key pressed signal from the keyboard.
+     */
+	@Override
+    public void keyPressed(KeyEvent event){
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (keyCode == LEFT)</span>
+        {;
+<span class="fc" id="L105">            process.leftArrow();</span>
+        }
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        else if (keyCode == RIGHT)</span>
+        {
+<span class="fc" id="L109">            process.rightArrow();</span>
+        }
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        else if (keyCode == UP)</span>
+        {
+<span class="fc" id="L113">            process.upArrow();</span>
+        }
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        else if (keyCode == DOWN)</span>
+        {
+<span class="fc" id="L117">            process.downArrow();</span>
+        }
+<span class="fc bfc" id="L119" title="All 4 branches covered.">        else if (keyCode == 'W' || keyCode == 'w')</span>
+        {
+<span class="fc" id="L121">            process.wKey();</span>
+        }
+<span class="fc bfc" id="L123" title="All 4 branches covered.">        else if (keyCode == 'S' || keyCode == 's')</span>
+        {
+<span class="fc" id="L125">            process.sKey();</span>
+        }
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        else if (keyCode == ' ')</span>
+        {
+<span class="fc" id="L129">            process.spaceBar();</span>
+        }
+<span class="fc bfc" id="L131" title="All 4 branches covered.">        else if (keyCode == 'R' || keyCode == 'r')</span>
+        {
+<span class="fc" id="L133">            process.rKey();</span>
+        }
+<span class="fc bfc" id="L135" title="All 4 branches covered.">        else if (keyCode == 'F' || keyCode == 'f')</span>
+        {
+<span class="fc" id="L137">            process.fKey();</span>
+        }
+<span class="fc bfc" id="L139" title="All 4 branches covered.">        else if (keyCode == 'H' || keyCode == 'h')</span>
+        {
+<span class="fc" id="L141">            process.hKey();</span>
+        }
+<span class="fc bfc" id="L143" title="All 4 branches covered.">        else if (keyCode == 'T' || keyCode == 't')</span>
+        {
+<span class="fc" id="L145">            process.tKey();</span>
+        }
+<span class="fc" id="L147">    }</span>
+
+    /**
+     * Draw all elements in the game by current frame.
+     */
+	@Override
+    public void draw() {
+<span class="fc" id="L154">        process.drawSetting();</span>
+<span class="fc" id="L155">        process.drawTank();</span>
+<span class="fc" id="L156">        process.drawStatistic();</span>
+<span class="fc" id="L157">        process.drawProjectile();</span>
+<span class="fc" id="L158">        process.drawNextRoundOrEndGame();</span>
+<span class="fc" id="L159">    }</span>
+
+    /**
+     * Run the program
+     * Set the &quot;Tanks.App&quot; to the main file
+     * @param args command line arguments
+     */
+    public static void main(String[] args)
+    {
+<span class="nc" id="L168">        PApplet.main(&quot;Tanks.App&quot;);</span>
+<span class="nc" id="L169">    }</span>
+
+    /**
+     * Set up the game, is used to start or restart
+     */
+    public void setUpGame() {
+        try {
+<span class="fc" id="L176">            JSONObject config = loadJSONObject(this.configPath);</span>
+<span class="fc" id="L177">            this.process = new Process(this, config);</span>
+<span class="nc" id="L178">        } catch (Exception e) {</span>
+<span class="nc" id="L179">            System.out.println(e);</span>
+<span class="fc" id="L180">        }</span>
+<span class="fc" id="L181">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

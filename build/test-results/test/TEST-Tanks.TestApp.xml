@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Tanks.TestApp" tests="6" skipped="0" failures="0" errors="0" timestamp="2024-05-16T13:08:49" hostname="DESKTOP-OP1A5O4" time="36.07">
+  <properties/>
+  <testcase name="testEndGame()" classname="Tanks.TestApp" time="15.776"/>
+  <testcase name="testFalling()" classname="Tanks.TestApp" time="4.025"/>
+  <testcase name="testPowerup()" classname="Tanks.TestApp" time="6.278"/>
+  <testcase name="testProgress()" classname="Tanks.TestApp" time="1.024"/>
+  <testcase name="testTankMovement()" classname="Tanks.TestApp" time="1.09"/>
+  <testcase name="testProjectile()" classname="Tanks.TestApp" time="7.873"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

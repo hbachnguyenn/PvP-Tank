@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Pointer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tanks_scaffold</a> &gt; <a href="index.source.html" class="el_package">Tanks</a> &gt; <span class="el_source">Pointer.java</span></div><h1>Pointer.java</h1><pre class="source lang-java linenums">package Tanks;
+
+/**
+ * Object represents the pointer
+ */
+<span class="fc" id="L6">public class Pointer {</span>
+    /** Declare an integer storing the X-coordinate of the current tank */
+    private int x;
+
+    /** Declare an integer storing the Y-coordinate of the current tank */
+    private float y;
+
+    /** Declare a variable storing the time that the turn of the current tank starts */
+    private long startTime;
+
+    /**
+     * Update the X, Y coordinates of the current tank
+     * @param x, X-coordinate of the tank
+     * @param y, Y-coordinate of the tank
+     */
+    public void updateCoordinate(int x, float y) {
+<span class="fc" id="L22">        this.x = x;</span>
+<span class="fc" id="L23">        this.y = y;</span>
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * Update the time that the player turn starts
+     * @param time, the time that the player turn starts
+     */
+    public void updateStartTime(long time) {
+<span class="fc" id="L31">        startTime = time;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Draw the pointer
+     * @param app, the App object which is currently using
+     * @param time, the current time
+     */
+    public void draw(App app, long time) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (time - startTime &lt; 2000) {</span>
+<span class="fc" id="L41">            app.stroke(5);</span>
+<span class="fc" id="L42">            app.noFill();</span>
+<span class="fc" id="L43">            app.color(0);</span>
+<span class="fc" id="L44">            app.line(x, y - 40, x, y - 80);</span>
+<span class="fc" id="L45">            app.line(x, y - 40, x - 10, y - 60);</span>
+<span class="fc" id="L46">            app.line(x, y - 40, x + 10, y - 60);</span>
+        }
+<span class="fc" id="L48">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
